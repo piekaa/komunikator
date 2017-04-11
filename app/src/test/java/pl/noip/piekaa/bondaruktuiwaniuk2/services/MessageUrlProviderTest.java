@@ -32,4 +32,11 @@ public class MessageUrlProviderTest
 
     }
 
+    String sendMessageCorrectUrl = Consts.kobaHost + "messages";
+    @Test
+    public void sendMessageUrl()
+    {
+        assertEquals(sendMessageCorrectUrl, messageUrlProvider.getSendMessageUrl());
+    }
+
 }

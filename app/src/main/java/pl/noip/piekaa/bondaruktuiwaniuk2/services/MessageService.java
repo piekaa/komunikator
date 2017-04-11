@@ -1,5 +1,7 @@
 package pl.noip.piekaa.bondaruktuiwaniuk2.services;
 
+import java.util.Objects;
+
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 import pl.noip.piekaa.bondaruktuiwaniuk2.networking.IPiekaRestClient;
 import pl.noip.piekaa.bondaruktuiwaniuk2.networking.PiekaHttpResponse;
@@ -21,6 +23,19 @@ public class MessageService implements IMessageService
 
         return response.getResponseObject();
     }
+
+    @Override
+    public void sendMessage(Message message) throws MessageSendErrorException
+    {
+        String url = urlProvider.getSendMessageUrl();
+
+        PiekaHttpResponse<Object> response = piekaRestClient.sendRequest(url, "POST",  Object.class, message);
+
+        if(response.getResponseCode() == -1 ) throw  new MessageSendErrorException();
+
+
+    }
+
 
     private IPiekaRestClient piekaRestClient;
     private IMessageUrlProvider urlProvider;

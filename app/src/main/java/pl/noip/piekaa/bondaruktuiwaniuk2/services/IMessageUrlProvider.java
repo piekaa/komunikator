@@ -7,4 +7,5 @@ package pl.noip.piekaa.bondaruktuiwaniuk2.services;
 public interface IMessageUrlProvider
 {
     String getMessageUrlById( Long id) ;
+    String getSendMessageUrl();
 }

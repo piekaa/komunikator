@@ -35,6 +35,12 @@ public class AsyncMessageServiceTest
             {
                 throw new MessageNotFoundException();
             }
+
+            @Override
+            public void sendMessage(Message message) throws MessageSendErrorException
+            {
+                throw new MessageSendErrorException();
+            }
         };
         successingMessageService = new IMessageService()
         {
@@ -43,41 +49,51 @@ public class AsyncMessageServiceTest
             {
                 return new Message();
             }
+
+            @Override
+            public void sendMessage(Message message) throws MessageSendErrorException
+            {
+
+            }
         };
 
     }
 
 
-
-
-
-
-    @Test
-    public void oneSuccessingOneFailing()
+    public void executeGetMessage(IMessageService ms1, IMessageService ms2)
     {
-
-        asyncMessageService = new AsyncMessageService(failingMessageService,successingMessageService);
-
+        asyncMessageService = new AsyncMessageService(ms1,ms2);
 
         asyncMessageService.tryToGetMessage(0L,
                 (message) -> {succeed++;}
                 ,
                 () -> {failed++;});
+    }
+
+    @Test
+    public void getMessageOneSuccessingOneFailingFirstFailing()
+    {
+
+        executeGetMessage(failingMessageService, successingMessageService);
 
         assertEquals(succeed, 1);
         assertEquals(failed, 0);
     }
 
     @Test
-    public void bothSuccessing()
+    public void getMessageOneSuccessingOneFailingFirstSuccessing()
     {
-        asyncMessageService = new AsyncMessageService(successingMessageService,successingMessageService);
 
+        executeGetMessage(successingMessageService, failingMessageService);
 
-        asyncMessageService.tryToGetMessage(0L,
-                (message) -> {succeed++;}
-                ,
-                () -> {failed++;});
+        assertEquals(succeed, 1);
+        assertEquals(failed, 0);
+    }
+
+    @Test
+    public void getMessageBothSuccessing()
+    {
+        executeGetMessage(successingMessageService, successingMessageService);
 
         assertEquals(succeed, 1);
         assertEquals(failed, 0);
@@ -85,18 +101,72 @@ public class AsyncMessageServiceTest
 
 
     @Test
-    public void bothFailing()
+    public void getMessageBothFailing()
     {
-        asyncMessageService = new AsyncMessageService(failingMessageService,failingMessageService);
-
-        asyncMessageService.tryToGetMessage(0L,
-                (message) -> {succeed++;}
-                ,
-                () -> {failed++;});
+        executeGetMessage(failingMessageService, failingMessageService);
 
         assertEquals(succeed, 0);
         assertEquals(failed, 1);
     }
+
+
+
+
+ /// sendMessageTest
+
+    @Test
+    public void sendMessageOneSuccessingOneFailingFirstFailing()
+    {
+
+        executeSendMessage(failingMessageService, successingMessageService);
+
+        assertEquals(succeed, 1);
+        assertEquals(failed, 0);
+    }
+
+    @Test
+    public void sendMessageOneSuccessingOneFailingFirstSuccessing()
+    {
+
+        executeSendMessage(successingMessageService, failingMessageService);
+
+        assertEquals(1, succeed);
+        assertEquals(0, failed);
+    }
+
+    @Test
+    public void sendMessageBothSuccessing()
+    {
+        executeSendMessage(successingMessageService, successingMessageService);
+
+        assertEquals(1, succeed);
+        assertEquals(0, failed);
+    }
+
+
+    @Test
+    public void sendMessageBothFailing()
+    {
+        executeSendMessage(failingMessageService, failingMessageService);
+
+        assertEquals(0, succeed);
+        assertEquals(1, failed);
+    }
+
+
+
+    public void executeSendMessage(IMessageService ms1, IMessageService ms2)
+    {
+
+        asyncMessageService = new AsyncMessageService(ms1,ms2);
+
+        asyncMessageService.tryToSendMessage(new Message("bla bla bla", 01L, 10L),
+                    () -> {succeed++;}
+                    ,
+                    () -> {failed++;});
+    }
+
+
 
 
 

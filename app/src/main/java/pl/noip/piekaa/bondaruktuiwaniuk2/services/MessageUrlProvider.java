@@ -25,4 +25,10 @@ public class MessageUrlProvider implements  IMessageUrlProvider
 
         return builder.toString();
     }
+
+    @Override
+    public String getSendMessageUrl()
+    {
+        return host + "messages";
+    }
 }

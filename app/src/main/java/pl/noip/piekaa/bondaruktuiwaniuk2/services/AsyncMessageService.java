@@ -13,16 +13,16 @@ class AsyncMessageService implements IAsyncMessageService
 
 
     private AsyncMessageService lock;
-    private IMessageService messageServiceKobaHost;
-    private IMessageService messageServiceNotKobaHost;
+    private IMessageService messageServicefirstHost;
+    private IMessageService messageServicesecondHost;
     private boolean didFail;
     private boolean didSucceed;
 
 
-    public AsyncMessageService(IMessageService messageServiceKobaHost, IMessageService messageServiceNotKobaHost)
+    public AsyncMessageService(IMessageService messageServicefirstHost, IMessageService messageServicesecondHost)
     {
-        this.messageServiceKobaHost = messageServiceKobaHost;
-        this.messageServiceNotKobaHost = messageServiceNotKobaHost;
+        this.messageServicefirstHost = messageServicefirstHost;
+        this.messageServicesecondHost = messageServicesecondHost;
         lock = this;
     }
 
@@ -61,7 +61,7 @@ class AsyncMessageService implements IAsyncMessageService
                 {
                     if (didFail == true )
                     {
-                        failedHandler.onGetMessageFailed();
+                        failedGetMessageHandler.handle();
                     }
                     didFail = true;
                 }
@@ -69,7 +69,7 @@ class AsyncMessageService implements IAsyncMessageService
                 {
                     if (didSucceed == false)
                     {
-                        succeedHandler.onGetMessageSucceed(message);
+                        succeedGetMessageHandler.handleMassage(message);
                     }
                     didSucceed = true;
                 }
@@ -77,16 +77,100 @@ class AsyncMessageService implements IAsyncMessageService
         }
     }
 
-    private IOnGetMessageSucceed succeedHandler;
-    private IOnGetMessageFailed failedHandler;
+
+
+
+    public class SendMessageTask extends AsyncTask<Message, Float, Void>
+    {
+
+        private IMessageService internalMessageService;
+        private boolean didSendFail;
+        public SendMessageTask(IMessageService internalMessageService)
+        {
+            this.internalMessageService = internalMessageService;
+            didSendFail = false;
+        }
+
+        @Override
+        protected Void doInBackground(Message... messages)
+        {
+            Message message = messages[0];
+            Message result = null;
+            try
+            {
+                internalMessageService.sendMessage(message);
+                didSendFail = false;
+            }
+            catch (MessageSendErrorException e)
+            {
+                didSendFail = true;
+                //    e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void obj)
+        {
+            synchronized (lock)
+            {
+                if (didSendFail)
+                {
+                    if (didFail == true )
+                    {
+                        failedSendMessageHandler.handle();
+                    }
+                    didFail = true;
+                }
+                else
+                {
+                    if (didSucceed == false)
+                    {
+                        succeedSendMessageHandler.handle();
+                    }
+                    didSucceed = true;
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+    private IMessageResponseHandler succeedGetMessageHandler;
+    private IVoidResponseHandler failedGetMessageHandler;
 
     @Override
-    public void tryToGetMessage(Long id, IOnGetMessageSucceed succeedHandler, IOnGetMessageFailed failedHandler)
+    public void tryToGetMessage(Long id, IMessageResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
     {
-        this.succeedHandler = succeedHandler;
-        this.failedHandler = failedHandler;
+        didSucceed = false;
+        didFail = false;
 
-        new GetMessageTask(messageServiceKobaHost).execute(id);
-        new GetMessageTask(messageServiceNotKobaHost).execute(id);
+        this.succeedGetMessageHandler = succeedHandler;
+        this.failedGetMessageHandler = failedHandler;
+
+        new GetMessageTask(messageServicefirstHost).execute(id);
+        new GetMessageTask(messageServicesecondHost).execute(id);
+    }
+
+
+    private IVoidResponseHandler succeedSendMessageHandler;
+    private IVoidResponseHandler failedSendMessageHandler;
+
+    @Override
+    public void tryToSendMessage(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+    {
+        didSucceed = false;
+        didFail = false;
+
+        succeedSendMessageHandler = succeedHandler;
+        failedSendMessageHandler = failedHandler;
+
+
+        new SendMessageTask(messageServicefirstHost).execute(message);
+        new SendMessageTask(messageServicesecondHost).execute(message);
+
     }
 }

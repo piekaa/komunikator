@@ -9,4 +9,5 @@ import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 public interface IMessageService
 {
     Message getMessageById(Long id) throws MessageNotFoundException;
+    void sendMessage(Message message) throws MessageSendErrorException;
 }

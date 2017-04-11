@@ -15,10 +15,12 @@ import static org.junit.Assert.*;
 public class MessageServiceTest {
 
     IMessageService messageService;
+    IMessageService badConfiguredMessageService;
     @Before
     public void init()
     {
         messageService = new MessageService(new PiekaJsonRestClient(), new MessageUrlProvider(Consts.kobaHost));
+        badConfiguredMessageService = new MessageService(new PiekaJsonRestClient(), new MessageUrlProvider("http://cyckiNaGiewoncie"));
     }
 
     @Test
@@ -36,5 +38,19 @@ public class MessageServiceTest {
         messageService.getMessageById(1423423551L);
     }
 
+    @Test
+    public void sendMessageTest() throws MessageSendErrorException
+    {
+        Message message = new Message("new message", 00L, 01L);
+        messageService.sendMessage(message);
+    }
+
+
+    @Test(expected = MessageSendErrorException.class)
+    public void badConfiguredMessageServiceThrowsExceptionOnSend() throws MessageSendErrorException
+    {
+        Message message = new Message("new message", 00L, 01L);
+        badConfiguredMessageService.sendMessage(message);
+    }
 
 }

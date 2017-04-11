@@ -6,7 +6,7 @@ import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
  * Created by piekaa on 2017-04-09.
  */
 
-public interface IOnGetMessageSucceed
+public interface IMessageResponseHandler
 {
-    void onGetMessageSucceed(Message message);
+    void handleMassage(Message message);
 }
