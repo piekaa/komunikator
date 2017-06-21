@@ -33,36 +33,14 @@ public class MessageService implements IMessageService
     @Override
     public void sendMessage(Message message) throws MessageSendErrorException
     {
-     //   System.out.println("Sending message...");
-
         String url = urlProvider.getSendMessageUrl();
 
-
-     //   System.out.println("Before send");
         PiekaHttpResponse<Object> response = piekaRestClient.sendRequest(url, "POST",  Object.class, message);
-     //   System.out.println("After send");
-
-      //  System.out.println("Is it null?" + response.getResponseCode());
-
         if(response.getResponseCode() == -1 ) throw  new MessageSendErrorException();
 
 
     }
 
-    @Override
-    public List<Message> getUnreadMessagesByReciverId(Long reciverId) throws MessageNotFoundException
-    {
-        String url = urlProvider.getUnreadMessagesByReciverIDUrl(reciverId);
-
-//        System.out.println("Trying to get unreaded messages by revicer id: " + url);
-
-        PiekaHttpResponse<MessageList> response = piekaRestClient.sendRequest(url, MessageList.class);
-
-        if(response.getResponseCode() == -1 ) throw  new MessageNotFoundException();
-        if( response.getResponseObject() == null ) throw new MessageNotFoundException();
-
-        return response.getResponseObject().getMessages();
-    }
 
     @Override
     public void markAsRead(Message message) throws MessageException
@@ -71,6 +49,37 @@ public class MessageService implements IMessageService
         PiekaHttpResponse<Object> response = piekaRestClient.sendRequest(url, "PUT",  Object.class, message);
         if(response.getResponseCode() == -1 ) throw  new MessageSendErrorException();
     }
+
+    @Override
+    public List<Message> getOldMessages(Long olderThan, int howMany, Long id1, Long id2) throws MessageNotFoundException
+    {
+        String url = urlProvider.getMoreMessagesUrl(olderThan, howMany, id1, id2);
+        System.out.println(url);
+        PiekaHttpResponse<MessageList> response = piekaRestClient.sendRequest(url, MessageList.class);
+
+
+        if(response.getResponseCode() == -1 ) throw  new MessageNotFoundException();
+        if( response.getResponseObject() == null ) throw new MessageNotFoundException();
+
+        return response.getResponseObject().getMessages();
+    }
+
+
+
+    @Override
+    public List<Message> getUnreadMessages(Long myId) throws MessageNotFoundException
+    {
+        String url = urlProvider.getUnreadMessagesUrl(myId);
+        System.out.println(url);
+        PiekaHttpResponse<MessageList> response = piekaRestClient.sendRequest(url, MessageList.class);
+
+
+        if(response.getResponseCode() == -1 ) throw  new MessageNotFoundException();
+        if( response.getResponseObject() == null ) throw new MessageNotFoundException();
+
+        return response.getResponseObject().getMessages();
+    }
+
 
 
     private IPiekaRestClient piekaRestClient;

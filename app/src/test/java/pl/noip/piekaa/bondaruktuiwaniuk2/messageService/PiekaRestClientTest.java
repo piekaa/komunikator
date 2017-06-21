@@ -45,31 +45,7 @@ public class PiekaRestClientTest
     }
 
 
-    @Test
-    public void canGetMessageWithId40()
-    {
-        PiekaHttpResponse<Message> response = execute(getMessageWithId40Url);
-        System.out.println(getMessageWithId40Url);
-        assertNotEquals(-1, response.getResponseCode());
-        assertNotNull(response.getResponseObject());
-        assertEquals(new Long(40L), response.getResponseObject().getMessageId());
 
-        System.out.println(response.getResponseObject());
-
-    }
-
-    @Test
-    public void canGetMessageWithId41()
-    {
-        PiekaHttpResponse<Message> response = execute(getMessageWithId41Url);
-        System.out.println(getMessageWithId41Url);
-        assertNotEquals(-1, response.getResponseCode());
-        assertNotNull(response.getResponseObject());
-        assertEquals(new Long(41L), response.getResponseObject().getMessageId());
-
-        System.out.println(response.getResponseObject());
-
-    }
 
 
 
@@ -106,16 +82,6 @@ public class PiekaRestClientTest
 
 
     @Test
-    public void mark42AsReaded()
-    {
-        PiekaHttpResponse<Object> response = restClient.sendRequest(mark42AsReadUrl, "PUT", Object.class, new Object());
-
-        assertEquals(200, response.getResponseCode());
-
-    }
-
-
-    @Test
     public void doesntReturnMarkedAsReadedMessageWithId42()
     {
         PiekaHttpResponse<MessageList> response = restClient.sendRequest(getUnreadMessagesUrl,  MessageList.class);
@@ -127,50 +93,9 @@ public class PiekaRestClientTest
     }
 
 
-    String getLast10MessagesUrl = host + "messages/0/10/2";
-    @Test
-    public void getLast10Messages()
-    {
-        PiekaHttpResponse<MessageList> response = restClient.sendRequest(getLast10MessagesUrl, MessageList.class);
-
-        assertEquals(200, response.getResponseCode());
-        assertNotNull(response.getResponseObject());
-
-        MessageList messageList = response.getResponseObject();
-
-        List<Message> messages = messageList.getMessages();
-
-        assertEquals(10, messages.size() );
-
-        System.out.println(messages);
 
 
-        messages.stream().forEach( (m) -> assertNotNull(m) );
 
-    }
-
-    String get6Skip0Url =  host + "messages/0/6/2";
-    String get5Skip5Url =  host + "messages/5/5/2";
-    @Test
-    public void get5Skip5()
-    {
-        List<Message> get6Skip0List = getMessags(get6Skip0Url);
-        List<Message> get5Skip5List = getMessags(get5Skip5Url);
-
-
-        assertEquals( get6Skip0List.get(get6Skip0List.size()-1).getMessageId(), get5Skip5List.get(0).getMessageId() );
-
-        assertEquals(5 , get5Skip5List.size() );
-
-    }
-
-    String skip1000000Url = host + "messages/1000000/10/2";;
-    @Test
-    public void skip100000ShouldBeEmpty()
-    {
-        List<Message> messages = getMessags(skip1000000Url);
-        assertEquals(0, messages.size());
-    }
 
 
     private List<Message> getMessags(String url)

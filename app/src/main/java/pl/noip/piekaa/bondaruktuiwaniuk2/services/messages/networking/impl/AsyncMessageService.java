@@ -5,8 +5,9 @@ import java.util.List;
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.DoubleTask;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.IVoidResponseHandler;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.NetworkMessageHandlerHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
-import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponse;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IMessageService;
 
@@ -59,27 +60,7 @@ public class AsyncMessageService implements IAsyncMessageService
                 () -> messageServicesecondHost.sendMessage(message)
         );
     }
-    @Override
-    public void tryToGetUnreadMessageByReciverId(Long reciverId , IMessageListResponse succeedHandler, IVoidResponseHandler failedHandler)
-    {
 
-//        System.out.println("Going to execute task");
-
-        new DoubleTask().executeTaskObject(
-                (e) ->
-                {
-//                    System.out.println("Unreaded async service handle successs!@#!@#!@#!@#!");
-                    succeedHandler.handle((List<Message>) e);
-                },
-                (e) ->
-                {
-//                    System.out.println("Unreaded async service handle fail!@#!@#!@#!@#!");
-                    failedHandler.handle();
-                },
-                () -> messageServicefirstHost.getUnreadMessagesByReciverId(reciverId),
-                () -> messageServicesecondHost.getUnreadMessagesByReciverId(reciverId)
-        );
-    }
 
     @Override
     public void tryMarkAsRead(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
@@ -95,6 +76,40 @@ public class AsyncMessageService implements IAsyncMessageService
                 },
                 () -> messageServicefirstHost.markAsRead(message),
                 () -> messageServicesecondHost.markAsRead(message)
+        );
+    }
+
+    @Override
+    public void tryToGetMoreMessages(Long olderThan, int howMany, Long id1, Long id2, IMessageListResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+    {
+        new DoubleTask().executeTaskObject(
+                (e) ->
+                {
+                    succeedHandler.handle((List<Message>)e);
+                },
+                (e) ->
+                {
+                    failedHandler.handle();
+                },
+                () -> messageServicefirstHost.getOldMessages(olderThan,howMany,id1,id2),
+                () -> messageServicesecondHost.getOldMessages(olderThan,howMany,id1,id2)
+        );
+    }
+
+    @Override
+    public void tryToGetUnreadMessagesByReciverId(long myId, IMessageListResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+    {
+        new DoubleTask().executeTaskObject(
+                (e) ->
+                {
+                    succeedHandler.handle((List<Message>)e);
+                },
+                (e) ->
+                {
+                    failedHandler.handle();
+                },
+                () -> messageServicefirstHost.getUnreadMessages(myId),
+                () -> messageServicesecondHost.getUnreadMessages(myId)
         );
     }
 

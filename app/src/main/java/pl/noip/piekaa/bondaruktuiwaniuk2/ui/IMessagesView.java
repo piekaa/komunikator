@@ -11,4 +11,8 @@ public interface IMessagesView
     void addToMeMessage(Message message);
     void addFromMeMessageSending(Message message);
     void setFromMeMessageAsSent(Message message);
+
+    void addOldToMeMessage(Message message);
+    void addOldFromMe(Message message);
+
 }

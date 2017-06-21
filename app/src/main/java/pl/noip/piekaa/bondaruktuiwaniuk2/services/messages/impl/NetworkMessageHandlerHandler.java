@@ -5,9 +5,8 @@ import java.util.List;
 
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.IVoidResponseHandler;
-import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponse;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
-import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.INetworkMessageListener;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.INetworkMessageProvider;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.OnMessageListener;
@@ -17,7 +16,7 @@ import pl.noip.piekaa.bondaruktuiwaniuk2.ui.IMessagesView;
  * Created by piekaa on 2017-05-12.
  */
 
-public class NetworkMessageHandler implements INetworkMessageProvider, INetworkMessageListener, IMessageListResponse, IVoidResponseHandler
+public class NetworkMessageHandlerHandler implements INetworkMessageProvider, INetworkMessageListener, IMessageListResponseHandler, IVoidResponseHandler
 {
 
     IMessagesView messagesView;
@@ -26,7 +25,7 @@ public class NetworkMessageHandler implements INetworkMessageProvider, INetworkM
     private long myId;
     private boolean processing;
 
-    public NetworkMessageHandler(IAsyncMessageService asyncMessageService, long myId)
+    public NetworkMessageHandlerHandler(IAsyncMessageService asyncMessageService, long myId)
     {
         this.asyncMessageService = asyncMessageService;
         this.myId = myId;
@@ -56,12 +55,12 @@ public class NetworkMessageHandler implements INetworkMessageProvider, INetworkM
     @Override
     public void tryGetUnreadedMessages()
     {
-     //   System.out.println("NetworkMessageHandler: tryGetUnreadedMessages() -> 1st");
+     //   System.out.println("NetworkMessageHandlerHandler: tryGetUnreadedMessages() -> 1st");
         if( processing == false )
         {
-            System.out.println("NetworkMessageHandler: tryGetUnreadedMessages() -> 2nd");
+            System.out.println("NetworkMessageHandlerHandler: tryGetUnreadedMessages() -> 2nd");
             processing = true;
-            asyncMessageService.tryToGetUnreadMessageByReciverId(myId,this, this);
+            asyncMessageService.tryToGetUnreadMessagesByReciverId(myId,this, this);
         }
 
     }

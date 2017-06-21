@@ -10,36 +10,38 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import pl.noip.piekaa.bondaruktuiwaniuk2.R;
+import pl.noip.piekaa.bondaruktuiwaniuk2.Vars;
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.MessageInfo;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponseHandler;
 
 /**
  * Created by piekaa on 2017-04-26.
  */
 
-public class MessageRecyclerAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder> implements IMessagesView
+public class MessageRecyclerAdapterHandler extends  RecyclerView.Adapter<RecyclerView.ViewHolder> implements IMessagesView, IMessageListResponseHandler
 {
 
-
-    int itemCount;
 
     private static int TO_ME = 1;
     private static int FROM_ME_NOT_SENT = 2;
     private static int FROM_ME_SENT = 3;
 
+    private RecyclerView recyclerView;
 
-    public MessageRecyclerAdapter(int itemCount)
+    public void setRecyclerView(RecyclerView recyclerView)
     {
-        this.itemCount = itemCount;
+        this.recyclerView = recyclerView;
     }
 
-    private List<MessageInfo> messages = new ArrayList<>();
-    private Map<Message, MessageInfo> messagesMap = new HashMap<>();
+    private static List<MessageInfo> messages = new ArrayList<>();
+    private static Map<Message, MessageInfo> messagesMap = new HashMap<>();
 
 
     private Set<Long> messagesTimestamps = new HashSet<>();
@@ -81,6 +83,9 @@ public class MessageRecyclerAdapter extends  RecyclerView.Adapter<RecyclerView.V
         return viewHolder;
     }
 
+
+
+
     @Override
     public int getItemViewType(int position)
     {
@@ -105,7 +110,6 @@ public class MessageRecyclerAdapter extends  RecyclerView.Adapter<RecyclerView.V
     @Override
     public void addToMeMessage(Message message)
     {
-
         if( messagesTimestamps.contains(message.getTimestamp() ))
             return;
 
@@ -115,6 +119,10 @@ public class MessageRecyclerAdapter extends  RecyclerView.Adapter<RecyclerView.V
         messages.add(messageInfo);
         messagesMap.put(message, messageInfo);
         this.notifyItemInserted(messages.size());
+        scrollToBottom();
+
+
+        checkIfItsOldets(message);
     }
 
     @Override
@@ -124,16 +132,105 @@ public class MessageRecyclerAdapter extends  RecyclerView.Adapter<RecyclerView.V
         messages.add( messageInfo );
         messagesMap.put(message, messageInfo );
         this.notifyItemInserted(messages.size());
+        scrollToBottom();
+
+        checkIfItsOldets(message);
+
     }
 
     @Override
     public void setFromMeMessageAsSent(Message message)
     {
-     //   System.out.println("SETFROMMEASSENT!");
         MessageInfo messageInfo = messagesMap.get(message);
         messageInfo.setSent(true);
         this.notifyItemChanged(messageInfo.getPosition());
+        scrollToBottom();
+
+
+        checkIfItsOldets(message);
     }
+
+    @Override
+    public void addOldToMeMessage(Message message)
+    {
+        if( messagesTimestamps.contains(message.getTimestamp() ))
+            return;
+
+        messagesTimestamps.add(message.getTimestamp());
+
+        MessageInfo messageInfo = new MessageInfo(message, true, false, -1);
+        messages.add(0,messageInfo);
+        messages.stream().forEach( m -> m.setPosition(m.getPosition()+1));
+        messagesMap.put(message, messageInfo);
+        this.notifyItemInserted(0);
+
+        scrollToTop();
+
+        checkIfItsOldets(message);
+
+    }
+
+    @Override
+    public void addOldFromMe(Message message)
+    {
+        if( messagesTimestamps.contains(message.getTimestamp() ))
+            return;
+
+        messagesTimestamps.add(message.getTimestamp());
+
+        MessageInfo messageInfo = new MessageInfo(message, false, true, -1);
+        messages.add(0,messageInfo);
+
+        for( MessageInfo m : messages )
+        {
+            m.setPosition(m.getPosition()+1);
+        }
+
+        messagesMap.put(message, messageInfo);
+        this.notifyItemInserted(0);
+
+        scrollToTop();
+
+        checkIfItsOldets(message);
+    }
+
+
+    private void checkIfItsOldets(Message message)
+    {
+        if( message.getTimestamp() < Vars.oldestTimestamp )
+        {
+            Vars.oldestTimestamp = message.getTimestamp();
+        }
+    }
+
+
+    private void scrollToBottom()
+    {
+        recyclerView.smoothScrollToPosition( messages.size() );
+    }
+
+    private void scrollToTop()
+    {
+        recyclerView.smoothScrollToPosition( 0 );
+    }
+
+    @Override
+    public void handle(List<Message> messages)
+    {
+        System.out.println("Handling old messages: " + messages.size());
+        for (Message message : messages)
+        {
+            if( message.getReciverId() == Vars.myId )
+            {
+                addOldFromMe(message);
+            }
+            else
+            {
+                addOldToMeMessage(message);
+            }
+        }
+    }
+
 
     class FromMeSentMessageViewHolder extends RecyclerView.ViewHolder implements MyViewHolder
     {

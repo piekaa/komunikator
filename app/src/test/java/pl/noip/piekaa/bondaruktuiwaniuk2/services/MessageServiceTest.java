@@ -32,15 +32,6 @@ public class MessageServiceTest {
         badConfiguredMessageService = new MessageService(new PiekaJsonRestClient(1000), new MessageUrlProvider("http://cyckiNaGiewoncie"));
     }
 
-    @Test
-    public void getsMessageWithId40() throws MessageNotFoundException
-    {
-        Message message = messageService.getMessageById(40L);
-
-        assertNotNull(message);
-
-        assertEquals(new Long(40L), message.getMessageId());
-    }
 
     @Test(expected = MessageNotFoundException.class)
     public void getsNotExistingMessageAndThrowsNotFoundException() throws MessageNotFoundException
@@ -63,15 +54,6 @@ public class MessageServiceTest {
         badConfiguredMessageService.sendMessage(message);
     }
 
-    @Test
-    public void getsUnreadMessages() throws MessageNotFoundException
-    {
-        List<Message> messages =  messageService.getUnreadMessagesByReciverId(01L);
-
-        assertNotEquals(0, messages.size());
-
-    }
-
     private Long testerSenderId=123123123L;
     private Long testerReciverId=321321312L;
 
@@ -81,7 +63,7 @@ public class MessageServiceTest {
         Message message = new Message("Some text", testerSenderId, testerReciverId);
         messageService.sendMessage(message);
 
-        List<Message> messages = messageService.getUnreadMessagesByReciverId(testerReciverId);
+        List<Message> messages = messageService.getUnreadMessages(testerReciverId);
 
         System.out.println(messages.size());
 
@@ -91,15 +73,31 @@ public class MessageServiceTest {
 
         messageService.markAsRead(myMessage.get());
 
-        messages = messageService.getUnreadMessagesByReciverId(testerReciverId);
+        messages = messageService.getUnreadMessages(testerReciverId);
 
         assertFalse( messages.stream().anyMatch(m -> m.getTimestamp().equals(message.getTimestamp())) );
 
+    }
 
+
+    @Test
+    public void unreadEmptyList() throws MessageException
+    {
+        Message message = new Message("Some text", testerSenderId, testerReciverId);
+        messageService.sendMessage(message);
+
+        List<Message> messages = messageService.getUnreadMessages(21313441234L);
+
+        System.out.println(messages.size());
+        System.out.println(messages);
+
+        for (Message m : messages)
+        {
+            System.out.println(m);
+        }
 
 
     }
-
 
 
 }

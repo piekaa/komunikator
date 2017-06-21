@@ -50,7 +50,7 @@ public class AsyncMessageServiceTest
             }
 
             @Override
-            public List<Message> getUnreadMessagesByReciverId(Long reciverId) throws MessageNotFoundException
+            public List<Message> getUnreadMessages(Long reciverId) throws MessageNotFoundException
             {
                  throw new MessageNotFoundException();
             }
@@ -59,6 +59,12 @@ public class AsyncMessageServiceTest
             public void markAsRead(Message message) throws MessageException
             {
 
+            }
+
+            @Override
+            public List<Message> getOldMessages(Long olderThan, int howMany, Long id1, Long id2) throws MessageNotFoundException
+            {
+                throw new MessageNotFoundException();
             }
         };
         successingMessageService = new IMessageService()
@@ -76,7 +82,7 @@ public class AsyncMessageServiceTest
             }
 
             @Override
-            public List<Message> getUnreadMessagesByReciverId(Long reciverId) throws MessageNotFoundException
+            public List<Message> getUnreadMessages(Long reciverId) throws MessageNotFoundException
             {
                 return new LinkedList<Message>();
             }
@@ -85,6 +91,12 @@ public class AsyncMessageServiceTest
             public void markAsRead(Message message) throws MessageException
             {
 
+            }
+
+            @Override
+            public List<Message> getOldMessages(Long olderThan, int howMany, Long id1, Long id2) throws MessageNotFoundException
+            {
+                return new LinkedList<Message>();
             }
         };
 
@@ -236,7 +248,7 @@ public class AsyncMessageServiceTest
 
         asyncMessageService = new AsyncMessageService(ms1,ms2);
 
-        asyncMessageService.tryToGetUnreadMessageByReciverId(01L,
+        asyncMessageService.tryToGetUnreadMessagesByReciverId(01L,
                 (m) -> {succeed++;}
                 ,
                 () -> {failed++;});

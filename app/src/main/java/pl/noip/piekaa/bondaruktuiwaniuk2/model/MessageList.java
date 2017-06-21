@@ -1,5 +1,6 @@
 package pl.noip.piekaa.bondaruktuiwaniuk2.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,6 +19,11 @@ public class MessageList
     public List<Message> getMessages()
     {
         return messages;
+    }
+
+
+    {
+        messages = new LinkedList<>();
     }
 
     @Override

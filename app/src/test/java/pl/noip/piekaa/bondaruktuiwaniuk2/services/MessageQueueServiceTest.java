@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.IVoidResponseHandler;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
-import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponse;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IMessageQueueService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.MessageQueueService;
@@ -43,14 +43,21 @@ public class MessageQueueServiceTest
                 succeedHandler.handle();
             }
 
+
             @Override
-            public void tryToGetUnreadMessageByReciverId(Long reciverId, IMessageListResponse succeedHandler, IVoidResponseHandler failedHandler)
+            public void tryMarkAsRead(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
             {
 
             }
 
             @Override
-            public void tryMarkAsRead(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+            public void tryToGetMoreMessages(Long olderThan, int howMany, Long id1, Long id2, IMessageListResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+            {
+
+            }
+
+            @Override
+            public void tryToGetUnreadMessagesByReciverId(long myId, IMessageListResponseHandler networkMessageHandlerHandler, IVoidResponseHandler networkMessageHandlerHandler1)
             {
 
             }
@@ -71,14 +78,21 @@ public class MessageQueueServiceTest
                 failedHandler.handle();
             }
 
+
             @Override
-            public void tryToGetUnreadMessageByReciverId(Long reciverId, IMessageListResponse succeedHandler, IVoidResponseHandler failedHandler)
+            public void tryMarkAsRead(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
             {
 
             }
 
             @Override
-            public void tryMarkAsRead(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+            public void tryToGetMoreMessages(Long olderThan, int howMany, Long id1, Long id2, IMessageListResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+            {
+
+            }
+
+            @Override
+            public void tryToGetUnreadMessagesByReciverId(long myId, IMessageListResponseHandler networkMessageHandlerHandler, IVoidResponseHandler networkMessageHandlerHandler1)
             {
 
             }

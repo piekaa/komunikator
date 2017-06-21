@@ -10,6 +10,12 @@ public class MessageInfo
 
     private boolean toMe;
     private boolean sent;
+
+    public void setPosition(int position)
+    {
+        this.position = position;
+    }
+
     private int position;
 
     public int getPosition()

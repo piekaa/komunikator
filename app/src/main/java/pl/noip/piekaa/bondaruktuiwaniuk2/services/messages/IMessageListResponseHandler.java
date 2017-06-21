@@ -8,7 +8,7 @@ import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
  * Created by piekaa on 2017-05-12.
  */
 
-public interface IMessageListResponse
+public interface IMessageListResponseHandler
 {
     void handle(List<Message> messages);
 }

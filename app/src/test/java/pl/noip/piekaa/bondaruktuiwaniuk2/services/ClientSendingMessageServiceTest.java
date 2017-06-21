@@ -75,4 +75,16 @@ class MyMessageView implements IMessagesView
     {
         content+="FromMeSent";
     }
+
+    @Override
+    public void addOldToMeMessage(Message message)
+    {
+
+    }
+
+    @Override
+    public void addOldFromMe(Message message)
+    {
+
+    }
 }

@@ -15,6 +15,7 @@ public interface IMessageService
 {
     Message getMessageById(Long id) throws MessageNotFoundException;
     void sendMessage(Message message) throws MessageSendErrorException;
-    List<Message> getUnreadMessagesByReciverId(Long reciverId) throws MessageNotFoundException;
     void markAsRead(Message message) throws MessageException;
+    List<Message> getOldMessages(Long olderThan, int howMany, Long id1, Long id2) throws MessageNotFoundException;
+    List<Message> getUnreadMessages(Long myId) throws MessageNotFoundException;
 }

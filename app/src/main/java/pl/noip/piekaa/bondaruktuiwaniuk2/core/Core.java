@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 
 import pl.noip.piekaa.bondaruktuiwaniuk2.Consts;
+import pl.noip.piekaa.bondaruktuiwaniuk2.Vars;
 import pl.noip.piekaa.bondaruktuiwaniuk2.androidServices.ScheduledService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.networking.IPiekaRestClient;
 import pl.noip.piekaa.bondaruktuiwaniuk2.networking.PiekaJsonRestClient;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.INetworkMessageListener;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.INetworkMessageProvider;
-import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.NetworkMessageHandler;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.NetworkMessageHandlerHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.AsyncMessageService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.ClientSendingMessageService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
@@ -53,6 +54,10 @@ public class Core
 
     private  IPiekaRestClient piekaRestClient;
 
+    public IAsyncMessageService getAsyncMessageService()
+    {
+        return asyncMessageService;
+    }
 
     private IClientSendingMessageService clientSendingMessageService;
 
@@ -96,9 +101,11 @@ public class Core
 
         messageCreator = new MessageCreator(01L, 01L);
 
-        NetworkMessageHandler networkMessageHandler = new NetworkMessageHandler(asyncMessageService, 01L);
+        NetworkMessageHandlerHandler networkMessageHandler = new NetworkMessageHandlerHandler(asyncMessageService, 01L);
         networkMessageListener = networkMessageHandler;
         networkMessageProvider = networkMessageHandler;
+
+        Vars.oldestTimestamp = System.currentTimeMillis();
 
     }
 

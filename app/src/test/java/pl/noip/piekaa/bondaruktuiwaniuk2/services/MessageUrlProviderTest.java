@@ -15,6 +15,8 @@ import static org.junit.Assert.*;
 public class MessageUrlProviderTest
 {
 
+
+
     private IMessageUrlProvider messageUrlProvider;
 
     @Before
@@ -45,7 +47,7 @@ public class MessageUrlProviderTest
     @Test
     public void getUnreadMessagesUrl()
     {
-        assertEquals(unreadMessages, messageUrlProvider.getUnreadMessagesByReciverIDUrl(10L));
+        assertEquals(unreadMessages, messageUrlProvider.getUnreadMessagesUrl(10L));
     }
 
     String markAsRead = Consts.kobaHost + "messages/10";
@@ -55,5 +57,12 @@ public class MessageUrlProviderTest
         assertEquals(markAsRead, messageUrlProvider.getMarkMessageAsReadUrl(10L));
     }
 
+
+    String moreMessages = Consts.kobaHost + "messages/old/123456/10/1/2";
+    @Test
+    public void getMoreMessages() throws Exception
+    {
+        assertEquals(moreMessages, messageUrlProvider.getMoreMessagesUrl(123456L,10,1L,2L));
+    }
 
 }
