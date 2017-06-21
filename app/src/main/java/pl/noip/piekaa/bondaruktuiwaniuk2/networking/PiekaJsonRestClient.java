@@ -20,12 +20,24 @@ import java.nio.charset.Charset;
 public class PiekaJsonRestClient implements  IPiekaRestClient {
 
 
+    private int timeout;
+
+    public PiekaJsonRestClient(int timeout)
+    {
+        this.timeout = timeout;
+    }
 
     // HTTP GET request
     public <T> PiekaHttpResponse<T> sendRequest(String url, String method, Type responseType, Object body)  {
-        String parameters ="";
-        System.out.println(parameters);
+
+
         URL httpUrl;
+
+
+
+//        System.out.println("PiekaJsonRestClient -> sendRequest -> " + url + " method: " + method);
+
+     //   System.out.println("Beginning of function...");
 
         PiekaHttpResponse<T> errorResponse = new PiekaHttpResponse<T>(-1, null);
 
@@ -37,6 +49,8 @@ public class PiekaJsonRestClient implements  IPiekaRestClient {
             return errorResponse;
         }
 
+   //     System.out.println("after first try");
+
         HttpURLConnection con;
         try {
             con = (HttpURLConnection) httpUrl.openConnection();
@@ -45,6 +59,8 @@ public class PiekaJsonRestClient implements  IPiekaRestClient {
             e1.printStackTrace();
             return errorResponse;
         }
+      //  System.out.println("after second try");
+
         // optional default is GET
         con.setRequestProperty("Content-Type", "application/json");
         con.setRequestProperty("Accept", "application/json");
@@ -52,27 +68,63 @@ public class PiekaJsonRestClient implements  IPiekaRestClient {
             con.setRequestMethod(method);
         } catch (ProtocolException e) {
             // TODO Auto-generated catch block
+            System.out.println("Setting request method didn't work?!");
             e.printStackTrace();
             return errorResponse;
         }
-        con.setDoOutput(true);
+
+   //     System.out.println("after third try");
+
+
+        if( !method.equals("GET"))
+            con.setDoOutput(true);
         con.setDoInput(true);
 
+//        System.out.println("timeout is: " + timeout);
+//        System.out.println("Method: " + con.getRequestMethod() );
+
+        con.setConnectTimeout(timeout);
+
         Gson g = new Gson();
+
+
+        try
+        {
+    //        System.out.println("Before connect");
+            con.connect();
+    //        System.out.println("After connect");
+        }
+        catch (IOException e)
+        {
+     //       System.out.println("Cannot connect! " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    //    System.out.println("After connect");
+
         if( body != null )
         {
+
+      //      System.out.println("Body not null");
             // write body
             OutputStream outputStream;
             try {
                 outputStream = con.getOutputStream();
                 outputStream.write(  g.toJson(body).getBytes(Charset.forName("UTF-8")));
             } catch (IOException e) {
+
+       //         System.out.println("Catched exception " + e.getMessage());
+
                 // TODO Auto-generated catch block
                 e.printStackTrace();
                 return errorResponse;
             }
 
         }
+
+
+  //      System.out.println("after 4th try");
+
         // get response code
         int responseCode;
         try {
@@ -83,6 +135,8 @@ public class PiekaJsonRestClient implements  IPiekaRestClient {
             return errorResponse;
         }
 
+
+    //    System.out.println("after 5th try");
 
 
         BufferedReader in;
@@ -102,7 +156,10 @@ public class PiekaJsonRestClient implements  IPiekaRestClient {
             return errorResponse;
         }
 
+    //    System.out.println("after 6th try");
+
         con.disconnect();
+
         //print result
 
         PiekaHttpResponse< T > result = new PiekaHttpResponse<T>(responseCode, (T)g.fromJson( response.toString(), responseType ) );
@@ -114,6 +171,9 @@ public class PiekaJsonRestClient implements  IPiekaRestClient {
 
     // HTTP GET request
     public <T> PiekaHttpResponse<T> sendRequest(String url, Type responseType)  {
+
+
+//        System.out.println("PiekaJsonRestClient -> sendRequest -> " + url);
 
         return sendRequest(url, "GET", responseType, null);
 

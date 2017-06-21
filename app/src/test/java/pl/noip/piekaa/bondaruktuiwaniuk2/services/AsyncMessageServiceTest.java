@@ -3,9 +3,16 @@ package pl.noip.piekaa.bondaruktuiwaniuk2.services;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.noip.piekaa.bondaruktuiwaniuk2.Consts;
+import java.util.LinkedList;
+import java.util.List;
+
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
-import pl.noip.piekaa.bondaruktuiwaniuk2.networking.PiekaJsonRestClient;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.exceptions.MessageException;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.AsyncMessageService;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IMessageService;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.exceptions.MessageNotFoundException;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.exceptions.MessageSendErrorException;
 
 import static org.junit.Assert.*;
 
@@ -41,6 +48,18 @@ public class AsyncMessageServiceTest
             {
                 throw new MessageSendErrorException();
             }
+
+            @Override
+            public List<Message> getUnreadMessagesByReciverId(Long reciverId) throws MessageNotFoundException
+            {
+                 throw new MessageNotFoundException();
+            }
+
+            @Override
+            public void markAsRead(Message message) throws MessageException
+            {
+
+            }
         };
         successingMessageService = new IMessageService()
         {
@@ -52,6 +71,18 @@ public class AsyncMessageServiceTest
 
             @Override
             public void sendMessage(Message message) throws MessageSendErrorException
+            {
+
+            }
+
+            @Override
+            public List<Message> getUnreadMessagesByReciverId(Long reciverId) throws MessageNotFoundException
+            {
+                return new LinkedList<Message>();
+            }
+
+            @Override
+            public void markAsRead(Message message) throws MessageException
             {
 
             }
@@ -151,6 +182,65 @@ public class AsyncMessageServiceTest
 
         assertEquals(0, succeed);
         assertEquals(1, failed);
+    }
+
+
+
+
+    //// get unread message test
+
+    /// sendMessageTest
+
+    @Test
+    public void getUnreadOneSuccessingOneFailingFirstFailing()
+    {
+
+        executeGetUnreadMessages(failingMessageService, successingMessageService);
+        assertEquals(succeed, 1);
+        assertEquals(failed, 0);
+    }
+
+    @Test
+    public void getUnreadOneSuccessingOneFailingFirstSuccessing()
+    {
+
+        executeGetUnreadMessages(successingMessageService, failingMessageService);
+
+        assertEquals(1, succeed);
+        assertEquals(0, failed);
+    }
+
+    @Test
+    public void getUnreadBothSuccessing()
+    {
+        executeGetUnreadMessages(successingMessageService, successingMessageService);
+
+        assertEquals(1, succeed);
+        assertEquals(0, failed);
+    }
+
+
+    @Test
+    public void getUnreadBothFailing()
+    {
+        executeGetUnreadMessages(failingMessageService, failingMessageService);
+
+        assertEquals(0, succeed);
+        assertEquals(1, failed);
+    }
+
+
+
+    public void executeGetUnreadMessages(IMessageService ms1, IMessageService ms2)
+    {
+
+        asyncMessageService = new AsyncMessageService(ms1,ms2);
+
+        asyncMessageService.tryToGetUnreadMessageByReciverId(01L,
+                (m) -> {succeed++;}
+                ,
+                () -> {failed++;});
+
     }
 
 

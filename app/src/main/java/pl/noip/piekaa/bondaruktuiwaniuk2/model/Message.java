@@ -11,7 +11,12 @@ public class Message
     private Long senderId;
     private Long reciverId;
     private Boolean markedAsRead;
+    private Long timestamp;
 
+    public Long getTimestamp()
+    {
+        return timestamp;
+    }
 
     public Boolean getMarkedAsRead() {
         return markedAsRead;
@@ -42,18 +47,29 @@ public class Message
     }
 
 
+    public Message(  String textContent, Long senderId, Long reciverId, Long timestamp)
+    {
+        markedAsRead = false;
+        this.textContent = textContent;
+        this.senderId = senderId;
+        this.reciverId = reciverId;
+        this.timestamp = timestamp;
+    }
+
     public Message(  String textContent, Long senderId, Long reciverId)
     {
         markedAsRead = false;
         this.textContent = textContent;
         this.senderId = senderId;
         this.reciverId = reciverId;
+        this.timestamp = System.currentTimeMillis();
     }
 
     public Message()
     {
         super();
     }
+
 
     @Override
     public String toString()
@@ -63,7 +79,8 @@ public class Message
                 ", textContent='" + textContent + '\'' +
                 ", senderId=" + senderId +
                 ", reciverId=" + reciverId +
-                ", read=" + markedAsRead +
+                ", markedAsRead=" + markedAsRead +
+                ", timestamp=" + timestamp +
                 '}';
     }
 }

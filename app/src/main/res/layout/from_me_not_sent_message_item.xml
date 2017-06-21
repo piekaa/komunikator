@@ -12,20 +12,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/rounded_corners">
+                android:background="@drawable/rounded_corners_gray">
 
                 <TextView
-                    android:id="@+id/tv_rv_date_and_time"
+                    android:id="@+id/tv_rv_tmns_date_and_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    android:text="10-02-2017 16:30"
+                    android:text="10-02-2017 17:30"
                     android:textSize="12sp"/>
 
                 <TextView
-                    android:id="@+id/tv_rv_message_content"
+                    android:id="@+id/tv_rv_tmns_message_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="8dp"

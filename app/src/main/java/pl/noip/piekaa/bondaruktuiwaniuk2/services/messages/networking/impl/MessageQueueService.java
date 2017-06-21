@@ -1,17 +1,19 @@
-package pl.noip.piekaa.bondaruktuiwaniuk2.services;
-
-import android.test.suitebuilder.TestSuiteBuilder;
+package pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.IVoidResponseHandler;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IMessageQueueService;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.MessageSentListener;
 
 /**
  * Created by piekaa on 2017-04-13.
  */
 
-class MessageQueueService implements IMessageQueueService
+public class MessageQueueService implements IMessageQueueService
 {
     Queue<Message> messages;
     boolean sending;

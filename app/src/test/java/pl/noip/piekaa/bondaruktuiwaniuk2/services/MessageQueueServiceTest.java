@@ -4,6 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.IVoidResponseHandler;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponse;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IMessageQueueService;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageResponseHandler;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.MessageQueueService;
 
 import static org.junit.Assert.*;
 /**
@@ -36,6 +42,18 @@ public class MessageQueueServiceTest
             {
                 succeedHandler.handle();
             }
+
+            @Override
+            public void tryToGetUnreadMessageByReciverId(Long reciverId, IMessageListResponse succeedHandler, IVoidResponseHandler failedHandler)
+            {
+
+            }
+
+            @Override
+            public void tryMarkAsRead(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+            {
+
+            }
         });
 
 
@@ -51,6 +69,18 @@ public class MessageQueueServiceTest
             public void tryToSendMessage(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
             {
                 failedHandler.handle();
+            }
+
+            @Override
+            public void tryToGetUnreadMessageByReciverId(Long reciverId, IMessageListResponse succeedHandler, IVoidResponseHandler failedHandler)
+            {
+
+            }
+
+            @Override
+            public void tryMarkAsRead(Message message, IVoidResponseHandler succeedHandler, IVoidResponseHandler failedHandler)
+            {
+
             }
         });
 

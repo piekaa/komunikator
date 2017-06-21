@@ -41,7 +41,7 @@ public class PiekaRestClientTest
     @Before
     public void Init()
     {
-        restClient = new PiekaJsonRestClient();
+        restClient = new PiekaJsonRestClient(1000);
     }
 
 

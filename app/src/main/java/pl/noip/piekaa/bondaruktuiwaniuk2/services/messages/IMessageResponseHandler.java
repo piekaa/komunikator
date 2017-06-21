@@ -1,4 +1,4 @@
-package pl.noip.piekaa.bondaruktuiwaniuk2.services;
+package pl.noip.piekaa.bondaruktuiwaniuk2.services.messages;
 
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 
