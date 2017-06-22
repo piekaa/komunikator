@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -160,7 +163,10 @@ public class MessageRecyclerAdapterHandler extends  RecyclerView.Adapter<Recycle
 
         MessageInfo messageInfo = new MessageInfo(message, true, false, -1);
         messages.add(0,messageInfo);
-        messages.stream().forEach( m -> m.setPosition(m.getPosition()+1));
+        for(MessageInfo m  : messages )
+        {
+            m.setPosition(m.getPosition()+1);
+        }
         messagesMap.put(message, messageInfo);
         this.notifyItemInserted(0);
 
@@ -217,6 +223,7 @@ public class MessageRecyclerAdapterHandler extends  RecyclerView.Adapter<Recycle
     @Override
     public void handle(List<Message> messages)
     {
+        Collections.reverse(messages);
         System.out.println("Handling old messages: " + messages.size());
         for (Message message : messages)
         {
@@ -246,6 +253,7 @@ public class MessageRecyclerAdapterHandler extends  RecyclerView.Adapter<Recycle
         public void bind(MessageInfo messageInfo)
         {
             messageTextView.setText(messageInfo.getMessage().getTextContent());
+            timeAndDaateTextView.setText(new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date(messageInfo.getMessage().getTimestamp())));
         }
     }
 
@@ -263,6 +271,7 @@ public class MessageRecyclerAdapterHandler extends  RecyclerView.Adapter<Recycle
         public void bind(MessageInfo messageInfo)
         {
             messageTextView.setText(messageInfo.getMessage().getTextContent());
+            timeAndDaateTextView.setText(new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date(messageInfo.getMessage().getTimestamp())));
         }
     }
 
@@ -280,6 +289,7 @@ public class MessageRecyclerAdapterHandler extends  RecyclerView.Adapter<Recycle
         public void bind(MessageInfo messageInfo)
         {
             messageTextView.setText(messageInfo.getMessage().getTextContent());
+            timeAndDaateTextView.setText(new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date(messageInfo.getMessage().getTimestamp())));
         }
     }
 

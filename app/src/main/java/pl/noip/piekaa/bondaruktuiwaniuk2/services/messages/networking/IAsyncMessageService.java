@@ -4,7 +4,6 @@ import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.IVoidResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageResponseHandler;
-import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.NetworkMessageHandlerHandler;
 
 /**
  * Created by piekaa on 2017-04-09.

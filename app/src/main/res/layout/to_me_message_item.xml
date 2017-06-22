@@ -21,7 +21,7 @@
                     android:layout_marginTop="8dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    android:text="10-02-2017 18:30"
+                    android:text=""
                     android:textSize="12sp"/>
 
                 <TextView
@@ -31,7 +31,7 @@
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:textColor="#000000"
-                    android:text="lorem ipsum pierdu pierdu"
+                    android:text=""
                     android:textSize="17sp"/>
 
 

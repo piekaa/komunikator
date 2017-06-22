@@ -29,7 +29,7 @@ public class ScheduledService extends Service implements Runnable
 
     private int frequency = 100;
 
-    private int nmlFrequency = 10;
+    private int nmlFrequency = 50;
     private int nmlCounter = nmlFrequency;
 
     @Override
@@ -40,7 +40,7 @@ public class ScheduledService extends Service implements Runnable
 
             queueService.tryToSendMessage();
 
-            if( nmlCounter <= 0 ) // every second
+            if( nmlCounter <= 0 ) // every 5 seconds
             {
              //   System.out.println("Trying to get unreaded message");
 

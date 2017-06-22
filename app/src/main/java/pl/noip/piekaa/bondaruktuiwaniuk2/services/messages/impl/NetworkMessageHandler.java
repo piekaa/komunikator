@@ -10,13 +10,14 @@ import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMess
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.INetworkMessageListener;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.INetworkMessageProvider;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.OnMessageListener;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.notifications.MessageNotification;
 import pl.noip.piekaa.bondaruktuiwaniuk2.ui.IMessagesView;
 
 /**
  * Created by piekaa on 2017-05-12.
  */
 
-public class NetworkMessageHandlerHandler implements INetworkMessageProvider, INetworkMessageListener, IMessageListResponseHandler, IVoidResponseHandler
+public class NetworkMessageHandler implements INetworkMessageProvider, INetworkMessageListener, IMessageListResponseHandler, IVoidResponseHandler
 {
 
     IMessagesView messagesView;
@@ -25,7 +26,7 @@ public class NetworkMessageHandlerHandler implements INetworkMessageProvider, IN
     private long myId;
     private boolean processing;
 
-    public NetworkMessageHandlerHandler(IAsyncMessageService asyncMessageService, long myId)
+    public NetworkMessageHandler(IAsyncMessageService asyncMessageService, long myId)
     {
         this.asyncMessageService = asyncMessageService;
         this.myId = myId;
@@ -55,10 +56,10 @@ public class NetworkMessageHandlerHandler implements INetworkMessageProvider, IN
     @Override
     public void tryGetUnreadedMessages()
     {
-     //   System.out.println("NetworkMessageHandlerHandler: tryGetUnreadedMessages() -> 1st");
+     //   System.out.println("NetworkMessageHandler: tryGetUnreadedMessages() -> 1st");
         if( processing == false )
         {
-            System.out.println("NetworkMessageHandlerHandler: tryGetUnreadedMessages() -> 2nd");
+            System.out.println("NetworkMessageHandler: tryGetUnreadedMessages() -> 2nd");
             processing = true;
             asyncMessageService.tryToGetUnreadMessagesByReciverId(myId,this, this);
         }
@@ -82,6 +83,10 @@ public class NetworkMessageHandlerHandler implements INetworkMessageProvider, IN
 //        System.out.println("Messages size: " + messages.size());
 //        System.out.println(messages);
 
+        if( messages.size() > 0 )
+        {
+            MessageNotification.showNotification(messages.get(messages.size()-1));
+        }
 
         for(Message message : messages)
         {

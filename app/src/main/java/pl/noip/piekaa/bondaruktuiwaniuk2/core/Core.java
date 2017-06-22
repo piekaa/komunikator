@@ -10,7 +10,7 @@ import pl.noip.piekaa.bondaruktuiwaniuk2.networking.IPiekaRestClient;
 import pl.noip.piekaa.bondaruktuiwaniuk2.networking.PiekaJsonRestClient;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.INetworkMessageListener;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.INetworkMessageProvider;
-import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.NetworkMessageHandlerHandler;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.NetworkMessageHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.AsyncMessageService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.ClientSendingMessageService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
@@ -23,6 +23,7 @@ import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.MessageCreator;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.MessageQueueService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.MessageService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.MessageUrlProvider;
+import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.impl.MessageServiceBase64AndCryptographicDecorator;
 
 /**
  * Created by piekaa on 2017-04-08.
@@ -77,7 +78,7 @@ public class Core
         }
     }
 
-    private final static int timeout = 2000;
+    private final static int timeout = 3500;
 
     private  void handleDependencies()
     {
@@ -89,8 +90,8 @@ public class Core
         System.out.println("Creating pieka rest json clinet with timeout: " + timeout);
         piekaRestClient = new PiekaJsonRestClient(timeout);
 
-        kobaMessageService = new MessageService(piekaRestClient, kobaUrlProvider);
-        notKobaMessageService = new MessageService(piekaRestClient, notKobaUrlProvider);
+        kobaMessageService = new MessageServiceBase64AndCryptographicDecorator( new MessageService(piekaRestClient, kobaUrlProvider) );
+        notKobaMessageService = new MessageServiceBase64AndCryptographicDecorator( new MessageService(piekaRestClient, notKobaUrlProvider) );
 
         asyncMessageService = new AsyncMessageService(notKobaMessageService, kobaMessageService);
 
@@ -99,15 +100,17 @@ public class Core
         clientSendingMessageService = new ClientSendingMessageService(messageQueueService);
 
 
-        messageCreator = new MessageCreator(01L, 01L);
+        messageCreator = new MessageCreator(Vars.myId, Vars.reciverId);
 
-        NetworkMessageHandlerHandler networkMessageHandler = new NetworkMessageHandlerHandler(asyncMessageService, 01L);
+        NetworkMessageHandler networkMessageHandler = new NetworkMessageHandler(asyncMessageService, Vars.myId);
         networkMessageListener = networkMessageHandler;
         networkMessageProvider = networkMessageHandler;
 
         Vars.oldestTimestamp = System.currentTimeMillis();
 
     }
+
+
 
 
     private  int QueueServiceId = 12131;
@@ -141,4 +144,8 @@ public class Core
     {
         return networkMessageProvider;
     }
+
+
+    private static final String SETTINGS_FILE_NAME = "settings.bin";
+
 }

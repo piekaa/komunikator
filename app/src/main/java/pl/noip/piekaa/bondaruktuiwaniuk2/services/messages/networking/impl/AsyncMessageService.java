@@ -5,7 +5,6 @@ import java.util.List;
 import pl.noip.piekaa.bondaruktuiwaniuk2.model.Message;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.DoubleTask;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.asyncTaskRelated.IVoidResponseHandler;
-import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.impl.NetworkMessageHandlerHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.networking.IAsyncMessageService;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageListResponseHandler;
 import pl.noip.piekaa.bondaruktuiwaniuk2.services.messages.IMessageResponseHandler;

@@ -13,6 +13,7 @@ public class Message
     private Boolean markedAsRead;
     private Long timestamp;
 
+
     public Long getTimestamp()
     {
         return timestamp;
@@ -83,4 +84,18 @@ public class Message
                 ", timestamp=" + timestamp +
                 '}';
     }
+
+
+    public Message createCopy(String newTextContent)
+    {
+        Message m = new Message();
+        m.timestamp = timestamp;
+        m.messageId = messageId;
+        m.senderId = senderId;
+        m.reciverId = reciverId;
+        m.markedAsRead = markedAsRead;
+        m.textContent = newTextContent;
+        return m;
+    }
+
 }
