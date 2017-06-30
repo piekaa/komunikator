@@ -210,12 +210,12 @@ public class MessageRecyclerAdapterHandler extends  RecyclerView.Adapter<Recycle
     }
 
 
-    private void scrollToBottom()
+    public void scrollToBottom()
     {
         recyclerView.smoothScrollToPosition( messages.size() );
     }
 
-    private void scrollToTop()
+    public void scrollToTop()
     {
         recyclerView.smoothScrollToPosition( 0 );
     }
@@ -227,7 +227,7 @@ public class MessageRecyclerAdapterHandler extends  RecyclerView.Adapter<Recycle
         System.out.println("Handling old messages: " + messages.size());
         for (Message message : messages)
         {
-            if( message.getReciverId() == Vars.myId )
+            if( message.getSenderId().equals( Vars.myId ) )
             {
                 addOldFromMe(message);
             }

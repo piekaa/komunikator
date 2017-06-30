@@ -42,6 +42,8 @@ public class SettingsUtils
             Vars.myId = settings.getSenderId();
             Vars.reciverId = settings.getReciverId();
             Vars.key = settings.getKey();
+
+            System.out.println("Myid: " + Vars.myId);
         }
         catch (IOException e)
         {

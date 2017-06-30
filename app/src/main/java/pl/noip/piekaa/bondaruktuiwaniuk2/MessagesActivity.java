@@ -47,8 +47,8 @@ public class MessagesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        SettingsUtils.loadSettings(this);
 
+        SettingsUtils.loadSettings(this);
 
         MessageNotification.setContext(this);
 
@@ -71,6 +71,7 @@ public class MessagesActivity extends AppCompatActivity {
 
 
 
+
         messageSender = core.getClientSendingMessageService();
         messageSender.setMessagesView(messageRecyclerAdapter);
         messageCreator = core.getMessageCreator();
@@ -79,8 +80,16 @@ public class MessagesActivity extends AppCompatActivity {
         core.getNetworkMessageProvider().setMessagesView(messageRecyclerAdapter);
 
 
+
+
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        messageRecyclerAdapter.scrollToBottom();
+    }
 
 
     public void sendMessage(View view)
@@ -155,7 +164,7 @@ public class MessagesActivity extends AppCompatActivity {
         while( Vars.activityQueue.size() > 0 )
         {
             Activity activity = Vars.activityQueue.poll();
-            if( activity != null)
+            if( activity != null && activity != this)
                 activity.finish();
         }
         Vars.activityQueue.add(this);
